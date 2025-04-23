@@ -1,8 +1,23 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import "./App.css";
 
-class Counter extends React.Component {
-  constructor(props) {
+type CounterState = {
+  count: number;
+};
+
+type GenreSelectProps = {
+  genres: string[];
+  onSelect: Dispatch<SetStateAction<string>>;
+  selectedGenre: string;
+};
+
+type SearchFormProps = {
+  initialValue: string;
+  onSearch: (value: string) => void;
+}
+
+class Counter extends React.Component<object, CounterState> {
+  constructor(props: { initialValue?: number; }) {
     super(props);
     this.state = {
       count: props.initialValue || 0,
@@ -12,11 +27,13 @@ class Counter extends React.Component {
     this.decrease = this.decrease.bind(this);
   }
 
-  increase(e) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  increase(_e: unknown) {
     this.setState({ count: this.state.count + 1 });
   }
 
-  decrease(e) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  decrease(_e: unknown) {
     this.setState({ count: this.state.count - 1 });
   }
 
@@ -35,14 +52,14 @@ class Counter extends React.Component {
   }
 }
 
-const GenreSelect = ({ genres, onSelect, selectedGenre }) => {
+const GenreSelect = ({ genres, onSelect, selectedGenre }: GenreSelectProps) => {
   return genres.map((genre) => (
     <button
       key={genre}
       onClick={() => onSelect(genre)}
       style={{
         marginRight: "10px",
-        backgroundColor: genre === selectedGenre ? "red" : "inherit",
+        backgroundColor: genre.toLowerCase() === selectedGenre.toLowerCase() ? "red" : "inherit",
       }}
     >
       {genre}
@@ -50,10 +67,10 @@ const GenreSelect = ({ genres, onSelect, selectedGenre }) => {
   ));
 };
 
-const SearchForm = ({ initialValue, onSearch }) => {
+const SearchForm = ({ initialValue, onSearch }: SearchFormProps) => {
   const [searchValue, setSearchValue] = useState(initialValue);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     onSearch(searchValue);
   };
@@ -71,18 +88,19 @@ const SearchForm = ({ initialValue, onSearch }) => {
 };
 
 function App() {
-  const genresArray = ["Action", "Drama", "Comedy", "Horror", "Sci-Fi"];
+  const genresArray = ['all', 'comedy', 'documentary', 'crime', 'horror'];
   const [selectedGenre, setSelectedGenre] = useState(genresArray[2]);
 
-  const handleSearch = (value) => {
+  const handleSearch = (value: string) => {
     console.log("Search value:", value);
+    setSelectedGenre(value);
   };
 
   return (
     <>
       <h1>React Mentoring App</h1>
       <Counter />
-      <SearchForm initialValue="Pulp Fiction" onSearch={handleSearch} />
+      <SearchForm initialValue={genresArray[2]} onSearch={handleSearch} />
       <GenreSelect
         genres={genresArray}
         onSelect={setSelectedGenre}
