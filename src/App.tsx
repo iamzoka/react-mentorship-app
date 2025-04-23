@@ -27,13 +27,11 @@ class Counter extends React.Component<object, CounterState> {
     this.decrease = this.decrease.bind(this);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  increase(_e: unknown) {
+  increase() {
     this.setState({ count: this.state.count + 1 });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  decrease(_e: unknown) {
+  decrease() {
     this.setState({ count: this.state.count - 1 });
   }
 
