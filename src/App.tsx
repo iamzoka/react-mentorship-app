@@ -14,10 +14,10 @@ type GenreSelectProps = {
 type SearchFormProps = {
   initialValue: string;
   onSearch: (value: string) => void;
-}
+};
 
 class Counter extends React.Component<object, CounterState> {
-  constructor(props: { initialValue?: number; }) {
+  constructor(props: { initialValue?: number }) {
     super(props);
     this.state = {
       count: props.initialValue || 0,
@@ -55,9 +55,13 @@ const GenreSelect = ({ genres, onSelect, selectedGenre }: GenreSelectProps) => {
     <button
       key={genre}
       onClick={() => onSelect(genre)}
+      data-testid="genre-select-button"
       style={{
         marginRight: "10px",
-        backgroundColor: genre.toLowerCase() === selectedGenre.toLowerCase() ? "red" : "inherit",
+        backgroundColor:
+          genre.toLowerCase() === selectedGenre.toLowerCase()
+            ? "red"
+            : "inherit",
       }}
     >
       {genre}
@@ -68,25 +72,33 @@ const GenreSelect = ({ genres, onSelect, selectedGenre }: GenreSelectProps) => {
 const SearchForm = ({ initialValue, onSearch }: SearchFormProps) => {
   const [searchValue, setSearchValue] = useState(initialValue);
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSearch(searchValue);
+    if (searchValue.trim()) {
+      onSearch(searchValue);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} data-testid="search-form">
       <input
         type="text"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        role="textbox"
+        data-testid="search-input"
       />
-      <button type="submit">Search</button>
+      <button type="submit" data-testid="search-button">
+        Search
+      </button>
     </form>
   );
 };
 
+export { SearchForm, GenreSelect, Counter };
+
 function App() {
-  const genresArray = ['all', 'comedy', 'documentary', 'crime', 'horror'];
+  const genresArray = ["all", "comedy", "documentary", "crime", "horror"];
   const [selectedGenre, setSelectedGenre] = useState(genresArray[2]);
 
   const handleSearch = (value: string) => {
