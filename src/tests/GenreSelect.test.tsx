@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import { GenreSelect } from "./App";
+import { GenreSelect } from "../components/GenreSelect";
 
 describe("GenreSelect", () => {
   const mockGenres = ["Action", "Comedy", "Drama"];
@@ -38,14 +38,14 @@ describe("GenreSelect", () => {
     );
 
     const selectedButton = screen.getByText(selectedGenre);
-    expect(selectedButton).toHaveStyle({ backgroundColor: "red" });
+    expect(selectedButton).toHaveClass("hover:bg-primary/90");
 
     // Verify other buttons are not highlighted
     mockGenres
       .filter((genre) => genre !== selectedGenre)
       .forEach((genre) => {
         const button = screen.getByText(genre);
-        expect(button).toHaveStyle({ backgroundColor: "inherit" });
+        expect(button).toHaveClass("hover:bg-accent");
       });
   });
 

@@ -1,122 +1,78 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import "./App.css";
-
-type CounterState = {
-  count: number;
-};
-
-type GenreSelectProps = {
-  genres: string[];
-  onSelect: Dispatch<SetStateAction<string>>;
-  selectedGenre: string;
-};
-
-type SearchFormProps = {
-  initialValue: string;
-  onSearch: (value: string) => void;
-};
-
-class Counter extends React.Component<object, CounterState> {
-  constructor(props: { initialValue?: number }) {
-    super(props);
-    this.state = {
-      count: props.initialValue || 0,
-    };
-
-    this.increase = this.increase.bind(this);
-    this.decrease = this.decrease.bind(this);
-  }
-
-  increase() {
-    this.setState({ count: this.state.count + 1 });
-  }
-
-  decrease() {
-    this.setState({ count: this.state.count - 1 });
-  }
-
-  render() {
-    return React.createElement(
-      "div",
-      null,
-      React.createElement("h2", null, `Counter: ${this.state.count}`),
-      React.createElement("button", { onClick: this.increase }, "Increase"),
-      React.createElement(
-        "button",
-        { onClick: this.decrease, style: { marginLeft: "10px" } },
-        "Decrease"
-      )
-    );
-  }
-}
-
-const GenreSelect = ({ genres, onSelect, selectedGenre }: GenreSelectProps) => {
-  return genres.map((genre) => (
-    <button
-      key={genre}
-      onClick={() => onSelect(genre)}
-      data-testid="genre-select-button"
-      style={{
-        marginRight: "10px",
-        backgroundColor:
-          genre.toLowerCase() === selectedGenre.toLowerCase()
-            ? "red"
-            : "inherit",
-      }}
-    >
-      {genre}
-    </button>
-  ));
-};
-
-const SearchForm = ({ initialValue, onSearch }: SearchFormProps) => {
-  const [searchValue, setSearchValue] = useState(initialValue);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchValue.trim()) {
-      onSearch(searchValue);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} data-testid="search-form">
-      <input
-        type="text"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        role="textbox"
-        data-testid="search-input"
-      />
-      <button type="submit" data-testid="search-button">
-        Search
-      </button>
-    </form>
-  );
-};
-
-export { SearchForm, GenreSelect, Counter };
+import React, { useState } from "react";
+import { SearchForm } from "./components/SearchForm";
+import { GenreSelect } from "./components/GenreSelect";
+import { MovieTile } from "./components/MovieTile";
+import { genresArray, moviesList } from "./sample-data/data";
+import { SortSelect } from "./components/SortSelect";
+import { MovieDetailsModal } from "./components/MovieDetailsModal";
+import { SortOption } from "./types";
 
 function App() {
-  const genresArray = ["all", "comedy", "documentary", "crime", "horror"];
   const [selectedGenre, setSelectedGenre] = useState(genresArray[2]);
+  const [selectedSort, setSelectedSort] = useState<SortOption>("release_date");
+  const [selectedMovie, setSelectedMovie] = useState<string | null>(null);
 
   const handleSearch = (value: string) => {
     console.log("Search value:", value);
     setSelectedGenre(value);
   };
 
+  const handleSort = (value: SortOption) => {
+    console.log("Yet to implement sort, but still logging: ", value);
+    setSelectedSort(value);
+  };
+
+  const handleMovieClick = (movieId: string) => {
+    setSelectedMovie(movieId);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMovie(null);
+  };
+
+  const selectedMovieData = selectedMovie
+    ? moviesList.find((movie) => movie.id === selectedMovie)
+    : null;
+
   return (
-    <>
-      <h1>React Mentoring App</h1>
-      <Counter />
-      <SearchForm initialValue={genresArray[2]} onSearch={handleSearch} />
-      <GenreSelect
-        genres={genresArray}
-        onSelect={setSelectedGenre}
-        selectedGenre={selectedGenre}
-      />
-    </>
+    <div className="min-h-screen bg-background">
+      <header className="border-b">
+        <div className="container flex flex-col items-center justify-center mx-auto py-4">
+          <h1 className="text-2xl font-bold mb-4">React Mentoring App</h1>
+          <SearchForm initialValue={genresArray[2]} onSearch={handleSearch} />
+        </div>
+      </header>
+
+      <main className="container mx-auto py-6">
+        <div className="flex justify-between items-center mb-4">
+          <GenreSelect
+            genres={genresArray}
+            onSelect={setSelectedGenre}
+            selectedGenre={selectedGenre}
+          />
+          <SortSelect onSort={handleSort} selectedSort={selectedSort} />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {moviesList.map((movie) => (
+            <MovieTile
+              key={movie.id}
+              movie={movie}
+              onClick={() => handleMovieClick(movie.id)}
+              onEdit={() => {}}
+              onDelete={() => {}}
+            />
+          ))}
+        </div>
+      </main>
+
+      {selectedMovieData && (
+        <MovieDetailsModal
+          movie={selectedMovieData}
+          isOpen={!!selectedMovie}
+          onClose={handleCloseModal}
+        />
+      )}
+    </div>
   );
 }
 

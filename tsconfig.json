@@ -11,6 +11,10 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
