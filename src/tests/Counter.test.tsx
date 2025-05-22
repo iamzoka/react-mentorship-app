@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import { Counter } from "./App";
+import { Counter } from "../components/Counter";
 
 describe("Counter", () => {
   it("renders with initial value from props", () => {
