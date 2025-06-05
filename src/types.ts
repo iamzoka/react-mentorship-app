@@ -27,7 +27,7 @@ export type Movie = {
 };
 
 export type MovieDetailsModalProps = {
-  movie: Movie;
+  movieData: Movie;
   isOpen: boolean;
   onClose: () => void;
 };
