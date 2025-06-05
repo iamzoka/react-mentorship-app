@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, FormEventHandler, SetStateAction } from "react";
 
 export type GenreSelectProps = {
   genres: string[];
@@ -27,7 +27,7 @@ export type Movie = {
 };
 
 export type MovieDetailsModalProps = {
-  movie: Movie;
+  movieData: Movie;
   isOpen: boolean;
   onClose: () => void;
 };
@@ -44,4 +44,18 @@ export type MovieTileProps = {
   onClick: (movie: Movie) => void;
   onEdit: (movie: Movie) => void;
   onDelete: (movie: Movie) => void;
+};
+
+export type AddNewMovieModalProps = {
+  movieData?: Movie;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: FormEventHandler<HTMLFormElement>;
+};
+
+export type DialogWrapperProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  dialogTitle: string;
+  children: React.ReactNode;
 };
