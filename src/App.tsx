@@ -9,6 +9,7 @@ import { Movie, SortOption } from "./types";
 import { Button } from "./components/ui/button";
 import { AddNewMovieModal } from "./components/AddNewMovieModal";
 import { EditMovieModal } from "./components/EditMovieModal";
+import { DeleteMovieModal } from "./components/DeleteMovieModal";
 
 function App() {
   const [selectedGenre, setSelectedGenre] = useState(genresArray[2]);
@@ -17,6 +18,8 @@ function App() {
   const [isAddMovieModalOpen, setIsAddMovieModalOpen] = useState(false);
   const [isEditMovieModalOpen, setIsEditMovieModalOpen] = useState(false);
   const [editMovie, setEditMovie] = useState<Movie | null>(null);
+  const [isDeleteMovieModalOpen, setIsDeleteMovieModalOpen] = useState(false);
+  const [deleteMovie, setDeleteMovie] = useState<Movie | null>(null);
   const [addNewMovie, setAddNewMovie] =
     useState<FormEvent<HTMLFormElement> | null>(null);
 
@@ -71,6 +74,11 @@ function App() {
     setIsEditMovieModalOpen(false);
   };
 
+  const handleDeleteMovie = (movie: Movie) => {
+    setIsDeleteMovieModalOpen(true);
+    setDeleteMovie(movie);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
@@ -107,7 +115,7 @@ function App() {
               movie={movie}
               onClick={() => handleMovieClick(movie.id)}
               onEdit={() => handleEditMovie(movie)}
-              onDelete={() => {}}
+              onDelete={() => handleDeleteMovie(movie)}
             />
           ))}
         </div>
@@ -115,7 +123,7 @@ function App() {
 
       {selectedMovieData && (
         <MovieDetailsModal
-          movie={selectedMovieData}
+          movieData={selectedMovieData}
           isOpen={!!selectedMovie}
           onClose={handleCloseModal}
         />
@@ -133,6 +141,24 @@ function App() {
         isOpen={isEditMovieModalOpen}
         onSubmit={handleEditMovieSubmit}
         onClose={() => setIsEditMovieModalOpen(false)}
+      />
+
+      <DeleteMovieModal
+        movieData={
+          deleteMovie
+            ? deleteMovie
+            : {
+                id: "",
+                name: "",
+                releaseYear: 0,
+                genres: [],
+                imageUrl: "",
+                duration: "",
+                description: "",
+              }
+        }
+        isOpen={isDeleteMovieModalOpen}
+        onClose={() => setIsDeleteMovieModalOpen(false)}
       />
     </div>
   );
